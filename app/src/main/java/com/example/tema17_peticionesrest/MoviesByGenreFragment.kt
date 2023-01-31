@@ -10,10 +10,21 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
 
 class MoviesByGenreFragment : Fragment() {
+
+    private var adapter: MoviesAdapter? = null
+    var data: ArrayList<MoviesResponse.Result> = ArrayList()
+    val TAG = "MainActivity"
+    private var loader: View? = null
+    private lateinit var rvPeliculas: RecyclerView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +44,7 @@ class MoviesByGenreFragment : Fragment() {
         view.findViewById<TextView>(R.id.prueba).text = nombre
         */
 
-
+/*
         val parametroEnviado =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
 
@@ -46,6 +57,37 @@ class MoviesByGenreFragment : Fragment() {
             }
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = parametroEnviado?.name
+*/
+
+
+        rvPeliculas = view.findViewById<RecyclerView>(R.id.rvMovies)
+        val mLayoutManager = GridLayoutManager(context, 3)
+        rvPeliculas.layoutManager = mLayoutManager
+        //Creamos el adapter y lo vinculamos con el recycler
+        adapter = MoviesAdapter(data) { agent->
+
+            activity?.let{
+
+
+                val fragment = DetailAgentsFragment()
+                fragment.arguments = Bundle()
+                fragment.arguments?.putSerializable("agent",agent)
+
+
+                it.supportFragmentManager.beginTransaction().addToBackStack(null)
+                    .replace(R.id.container,fragment).commit()
+            }
+
+        }
+        rvAgentes.adapter = adapter
+
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(rvAgentes)
+
+        ApiRest.initService()
+        getGenres()
+
+
 
     }
 }
