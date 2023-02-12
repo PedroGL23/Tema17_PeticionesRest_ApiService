@@ -33,13 +33,6 @@ class MoviesByGenreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
-        val nombre = arguments?.getString("nombre")
-        Log.i("GenresListFragment está enviando.......", nombre.toString())
-        view.findViewById<TextView>(R.id.prueba).text = nombre
-        */
-
-
         val pelicula =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
 
