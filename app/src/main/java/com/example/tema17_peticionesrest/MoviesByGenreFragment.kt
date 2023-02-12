@@ -58,9 +58,22 @@ class MoviesByGenreFragment : Fragment() {
         rvPeliculas = view.findViewById(R.id.rvMovies)
         val mLayoutManager = GridLayoutManager(context, 2)
         rvPeliculas.layoutManager = mLayoutManager
-        adapter = MoviesAdapter(data)
+        adapter = MoviesAdapter(data){ selectedMovie ->
+
+            activity?.let{
+
+                val fragment = SelectedMovieFragment()
+                fragment.arguments = Bundle()
+                fragment.arguments?.putSerializable("selected movie", selectedMovie)
+
+                it.supportFragmentManager.beginTransaction().addToBackStack(null).replace(R.id.container, fragment).commit()
+            }
+
+        }
         //  Vinculamos el recycler con el adapter.
         rvPeliculas.adapter = adapter
+
+        ApiRest.initService()
         getMovies(pelicula)
 
         }
