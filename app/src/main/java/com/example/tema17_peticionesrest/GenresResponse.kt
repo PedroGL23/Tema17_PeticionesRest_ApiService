@@ -1,7 +1,5 @@
 package com.example.tema17_peticionesrest
 
-
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class GenresResponse(

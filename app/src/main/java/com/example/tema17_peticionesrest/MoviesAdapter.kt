@@ -4,12 +4,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class MoviesAdapter(private val data: ArrayList<MoviesResponse.Result>, val onClick:(MoviesResponse.Result)->Unit) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+class MoviesAdapter(private val data: ArrayList<MoviesGenresResponse.Result>) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         return ViewHolder(view)
@@ -23,16 +24,20 @@ class MoviesAdapter(private val data: ArrayList<MoviesResponse.Result>, val onCl
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val movieTitle = itemView.findViewById<TextView>(R.id.movieTitle)
-        val card = itemView.findViewById<CardView>(R.id.moviePoster)
+        val card = itemView.findViewById<CardView>(R.id.card)
+        val moviePoster = itemView.findViewById<ImageView>(R.id.moviePoster)
 
-        fun bind(item: MoviesResponse.Result) {
+        fun bind(item: MoviesGenresResponse.Result) {
             movieTitle.text = item.title
-            val cardRoute = item.posterPath
-
+            val urlPoster = ApiRest.URL_IMAGES + item.poster_path
+            Picasso.get().load(urlPoster).into(moviePoster)
+/*
             card.setOnClickListener {
                 //Log.v("Pulso sobre", item.id.toString())
                 onClick(item)
             }
+
+ */
         }
 
     }

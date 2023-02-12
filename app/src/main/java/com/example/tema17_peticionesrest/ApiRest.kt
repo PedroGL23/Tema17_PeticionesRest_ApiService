@@ -3,8 +3,6 @@ package com.example.tema17_peticionesrest
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-
     object ApiRest {
         lateinit var service: ApiService
         val URL = "https://api.themoviedb.org/3/"

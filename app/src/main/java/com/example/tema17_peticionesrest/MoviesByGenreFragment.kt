@@ -1,30 +1,25 @@
 package com.example.tema17_peticionesrest
 
-import android.os.Build
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MoviesByGenreFragment : Fragment() {
 
-    private var adapter: MoviesAdapter? = null
-    var data: ArrayList<MoviesResponse.Result> = ArrayList()
-    val TAG = "MainActivity"
-    private var loader: View? = null
+    private lateinit var adapter: MoviesAdapter
+    var data: ArrayList<MoviesGenresResponse.Result> = ArrayList()
     private lateinit var rvPeliculas: RecyclerView
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +39,8 @@ class MoviesByGenreFragment : Fragment() {
         view.findViewById<TextView>(R.id.prueba).text = nombre
         */
 
-/*
-        val parametroEnviado =
+
+        val pelicula =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
 
                 arguments?.getSerializable("genre", GenresResponse.Genre::class.java)
@@ -56,38 +51,44 @@ class MoviesByGenreFragment : Fragment() {
 
             }
 
-        (activity as? AppCompatActivity)?.supportActionBar?.title = parametroEnviado?.name
-*/
+        (activity as? AppCompatActivity)?.supportActionBar?.title = pelicula?.name
 
 
-        rvPeliculas = view.findViewById<RecyclerView>(R.id.rvMovies)
-        val mLayoutManager = GridLayoutManager(context, 3)
+
+        rvPeliculas = view.findViewById(R.id.rvMovies)
+        val mLayoutManager = GridLayoutManager(context, 2)
         rvPeliculas.layoutManager = mLayoutManager
-        //Creamos el adapter y lo vinculamos con el recycler
-        adapter = MoviesAdapter(data) { agent->
-
-            activity?.let{
-
-
-                val fragment = DetailAgentsFragment()
-                fragment.arguments = Bundle()
-                fragment.arguments?.putSerializable("agent",agent)
-
-
-                it.supportFragmentManager.beginTransaction().addToBackStack(null)
-                    .replace(R.id.container,fragment).commit()
-            }
+        adapter = MoviesAdapter(data)
+        //  Vinculamos el recycler con el adapter.
+        rvPeliculas.adapter = adapter
+        getMovies(pelicula)
 
         }
-        rvAgentes.adapter = adapter
 
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rvAgentes)
+    private fun getMovies(film: GenresResponse.Genre?) {
+        val call = ApiRest.service.getMovies(with_genres = film?.id.toString())
+        call.enqueue(object : Callback<MoviesGenresResponse> {
+            override fun onResponse(call: Call<MoviesGenresResponse>, response: Response<MoviesGenresResponse>) {
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    Log.i(ContentValues.TAG, body.toString())
+                    data.clear()
+                    data.addAll(body.results)
+                    // Imprimir aqui el listado con logs
+                    adapter?.notifyDataSetChanged()
+                } else {
+                    Log.e(ContentValues.TAG, response.errorBody()?.string()?:"Error")
+                }
+            }
+            override fun onFailure(call: Call<MoviesGenresResponse>, t: Throwable) {
+                Log.e(ContentValues.TAG, t.message.toString())
+            }
+        })
+    }
 
-        ApiRest.initService()
-        getGenres()
+
 
 
 
     }
-}
+

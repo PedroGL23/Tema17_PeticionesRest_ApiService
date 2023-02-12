@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -17,7 +16,6 @@ import retrofit2.Response
 
 class GenresListFragment : Fragment() {
 
-    //private var loader: View? = null
     private var swiperefresh: SwipeRefreshLayout? = null
     private lateinit var rvGeneros: RecyclerView
 
@@ -71,12 +69,10 @@ class GenresListFragment : Fragment() {
         //  Aquí hago la petición al servicio.
         getGenres()
 
-        getMovies()
 
         swiperefresh?.setOnClickListener{
             getGenres()
 
-            getMovies()
         }
 
     }
@@ -90,15 +86,6 @@ class GenresListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_generes_list, container, false)
     }
 
-
-
-    private fun getMovies(){
-
-        val call = ApiRest.service.getMovies("genero pulsado por el usuario")
-
-
-
-    }
 
     private fun getGenres() {
         val call = ApiRest.service.getGenres()
